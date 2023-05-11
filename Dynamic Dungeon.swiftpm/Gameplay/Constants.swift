@@ -15,6 +15,21 @@ enum Dimensions {
     static let heightHalf = height / 2
 }
 
+enum GameParameters {
+    static let squareSide = Dimensions.width / 6
+
+    static let initialSpeedDuration = 0.8
+    
+    /// The reciprocal of this value is the xScore at which the speed doubles (duration halves)
+    static let scoreToAdditionalSpeedMultiplier = 0.022
+    
+    static let initialStunAttackChance = 0.01
+    static let stunAttackChanceLimit = 0.1
+    static let scoreToAdditionalStunAttackChanceMultiplier = 0.0008
+    
+    static let rowGenerationsNeededPerStar = 3
+}
+
 enum KeyCodes {
     static let esc  : UInt16 = 53
     static let a    : UInt16 = 0

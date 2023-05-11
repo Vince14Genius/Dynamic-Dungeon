@@ -2,16 +2,11 @@
 //  Method.swift
 //  Dynamic Dungeon
 //
-//  Created by Vincent Cai [STUDENT] on 20/04/2017.
+//  Created by Vincent C. on 20/04/2017.
 //  Copyright © 2017 StartDev. All rights reserved.
 //
 
 import SpriteKit
-
-// MARK: In-Game Methods
-
-var rowsGenerated = 0
-var speedDuration = finalSpeedDuration + (initialSpeedDuration - finalSpeedDuration) / (Double(powf(Float(1 + speedIncreaseRateBase), Float(Double(rowsGenerated) * speedIncreaseRatePower))))
 
 extension Game {
     func generateTiles() {
@@ -46,13 +41,13 @@ extension Game {
                 }
                 
                 for i in pathsAvailable {
-                    if Int(arc4random() % 4) < lastPathCount {
+                    if Int.random(in: 0 ..< 4) < lastPathCount {
                         thisCombo.append(Tile(type: .path, xCoordinate: i))
                     }
                 }
             }
         } else { //Generates paths that connect from previous paths
-            var numberOfPaths = Int(arc4random() % 3) + 1
+            var numberOfPaths = Int.random(in: 1 ..< 4)
             var pathsAvailable = [1, 2, 3, 4, 5, 6]
             
             for i in lastCombo! {
@@ -74,7 +69,7 @@ extension Game {
             if numberOfPaths > pathsAvailable.count {numberOfPaths = pathsAvailable.count}
             
             for _ in 1 ... numberOfPaths {
-                let randomLocation = Int(arc4random() % UInt32(pathsAvailable.count))
+                let randomLocation = Int.random(in: 0 ..< pathsAvailable.count)
                 let addingCoordinate = pathsAvailable[randomLocation]
                 pathsAvailable.remove(at: randomLocation)
                 
@@ -84,8 +79,11 @@ extension Game {
         
         //Add addons
         
-        if (rowsGenerated % 3 == 0) && (rowsGenerated != 0) {
-            thisCombo[Int(arc4random() % UInt32(thisCombo.count))].addChild(
+        if
+            rowsGenerated > 0,
+            rowsGenerated % GameParameters.rowGenerationsNeededPerStar == 0
+        {
+            thisCombo[Int.random(in: 0 ..< thisCombo.count)].addChild(
                 AddOn(type: .star, game: self)
             )
         }
@@ -96,7 +94,7 @@ extension Game {
                     if
                         let tile = i as? Tile,
                         tile.type == .path,
-                        arc4random() % 16 == 0
+                        Double.random(in: 0..<1) < stunAttackChance
                     {
                         tile.addChild(
                             AddOn(
@@ -139,7 +137,7 @@ extension Game {
         }
         
         if let last = lastRow {
-            row.position.y = last.position.y + squareSide
+            row.position.y = last.position.y + GameParameters.squareSide
         }
         
         lastRow = row
@@ -147,37 +145,5 @@ extension Game {
         
         allTiles.addChild(row)
         allTiles.position.y = 0
-    }
-}
-
-// MARK: Special Modes
-
-extension Game {
-    func testForSuperpower() {
-        combo += 1
-        if combo >= 4 {
-            if !isSuperpowerOn {
-                effects.superpowerGranted()
-            }
-            isSuperpowerOn = true
-            hero.texture = .init(imageNamed: "heroSwift")
-        }
-    }
-
-    func superpowerUse() -> Bool {
-        let wasSuperpowerOn = isSuperpowerOn
-        if isSuperpowerOn {
-            effects.superpowerUsed()
-        }
-        isSuperpowerOn = false
-        combo = 0
-        hero.texture = .init(imageNamed: "hero")
-        return wasSuperpowerOn
-    }
-
-    func superpowerOff() {
-        isSuperpowerOn = false
-        combo = 0
-        hero.texture = .init(imageNamed: "hero")
     }
 }

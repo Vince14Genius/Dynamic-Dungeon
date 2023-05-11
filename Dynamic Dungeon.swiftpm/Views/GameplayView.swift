@@ -42,6 +42,7 @@ struct GameplayView: View {
                         .foregroundColor(Color.accentColor)
                     Spacer()
                     Button {
+                        game.isPaused = true
                         isShowingExitAlert = true
                     } label: {
                         Image(systemName: "multiply")
@@ -56,6 +57,7 @@ struct GameplayView: View {
         .alert("Exit to Title", isPresented: $isShowingExitAlert) {
             Button("Cancel", role: .cancel) {
                 isShowingExitAlert = false
+                game.isPaused = false
             }
             Button("Quit", role: .destructive) {
                 isShowingExitAlert = false

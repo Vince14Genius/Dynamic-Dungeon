@@ -2,7 +2,7 @@
 //  Input.swift
 //  Dynamic Dungeon
 //
-//  Created by Vincent Cai [STUDENT] on 20/04/2017.
+//  Created by Vincent C. on 20/04/2017.
 //  Copyright © 2017 StartDev. All rights reserved.
 //
 
@@ -20,7 +20,7 @@ extension Game {
             .move(to: CGPoint(x: 0, y: 0), duration: duration),
             .wait(forDuration: 0.1),
             .run {
-                self.superpowerOff()
+                self.loseSuperpower()
                 self.isInAction = false
             }
         ])
@@ -35,7 +35,7 @@ extension Game {
             var determined = false
             
             if determineX < 0 || determineX > Dimensions.width || determineY > Dimensions.height {
-                self.superpowerOff()
+                self.loseSuperpower()
                 self.hero.run(moveBack)
                 return
             }
@@ -68,7 +68,7 @@ extension Game {
                             }
                             
                             if isStunned {
-                                let stunDuration = self.superpowerUse() ? 0.5 : 1.0
+                                let stunDuration = self.useSuperpower() ? 0.5 : 1.0
                                 self.effects.stunned()
                                 self.hero.run(.sequence([
                                     .wait(forDuration: stunDuration),
@@ -82,7 +82,7 @@ extension Game {
                     if tile.type == .path {
                         self.hero.run(moveFull)
                     } else {
-                        if self.superpowerUse() {
+                        if self.useSuperpower() {
                             tile.turnIntoPath()
                             self.hero.run(moveFull)
                         } else {
@@ -94,7 +94,7 @@ extension Game {
             }
             
             if !determined {
-                self.superpowerOff()
+                self.loseSuperpower()
                 self.hero.run(moveBack)
             }
         }
@@ -111,10 +111,22 @@ extension Game {
             isInAction = true
             
             switch angle {
-            case -(3 * .pi / 4) ..<    -(.pi / 4): /* Down  */ slideTest(xShift: 0, yShift: -squareSide)
-            case     -(.pi / 4) ..<     (.pi / 4): /* Right */ slideTest(xShift: squareSide, yShift: 0)
-            case      (.pi / 4) ..< (3 * .pi / 4): /* Up    */ slideTest(xShift: 0         , yShift: squareSide)
-            default                              : /* Left  */ slideTest(xShift: -squareSide, yShift: 0)
+            case -(3 * .pi / 4) ..<    -(.pi / 4): /* Down  */ slideTest(
+                    xShift: 0,
+                    yShift: -GameParameters.squareSide
+                )
+            case     -(.pi / 4) ..<     (.pi / 4): /* Right */ slideTest(
+                    xShift: GameParameters.squareSide,
+                    yShift: 0
+                )
+            case      (.pi / 4) ..< (3 * .pi / 4): /* Up    */ slideTest(
+                    xShift: 0,
+                    yShift: GameParameters.squareSide
+                )
+            default                              : /* Left  */ slideTest(
+                    xShift: -GameParameters.squareSide,
+                    yShift: 0
+                )
             }
         }
     }

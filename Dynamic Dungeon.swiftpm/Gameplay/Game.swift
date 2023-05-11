@@ -30,6 +30,8 @@ class Game: ObservableObject {
     var lastCombo : [Tile]?
     var isInAction = false
     
+    var rowsGenerated = 0
+    
     init() {
         scene = .init(
             size: .init(
