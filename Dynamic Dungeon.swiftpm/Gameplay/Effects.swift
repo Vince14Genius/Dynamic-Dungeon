@@ -8,21 +8,11 @@
 
 import SpriteKit
 
-func effectGameStart(scene: SKScene) {
-    #if os(iOS)
-    let effect = createLabel(x: widthHalf, y: heightHalf, size: height / 20, text: "Swipe to move.")
-    #elseif os(macOS)
-    let effect = createLabel(x: widthHalf, y: heightHalf, size: height / 20, text: "Arrow/WASD keys\nto move.")
-    #endif
-    effect.zPosition = zOfButtons
-    scene.addChild(effect)
-    
-    effect.run(.sequence([
-        .fadeIn(withDuration: 0.5),
-        .wait(forDuration: 0.1),
-        .fadeOut(withDuration: 0.5),
-        .removeFromParent(),
-    ]))
+class Effects {
+    unowned var game: Game
+    init(game: Game) {
+        self.game = game
+    }
 }
 
 private let defaultEffectAction = SKAction.sequence([
@@ -32,38 +22,62 @@ private let defaultEffectAction = SKAction.sequence([
     .removeFromParent()
 ])
 
-func effectAddScore(game: Game) {
-    let effect = createLabel(x: 0, y: heightHalf / 24, size: height / 24, text: "+1")
-    effect.zPosition = zOfButtons
-    
-    game.hero.addChild(effect)
-    effect.run(defaultEffectAction)
-    effect.run(.moveBy(x: 0, y: height / 24, duration: 0.5))
-}
+extension Effects {
+    func startingInstructions() {
+        #if os(iOS)
+        let effect = createLabel(x: Dimensions.widthHalf, y: Dimensions.heightHalf, size: Dimensions.height / 20, text: "Swipe to move.")
+        #elseif os(macOS)
+        let effect = createLabel(x: Dimensions.widthHalf, y: Dimensions.heightHalf, size: Dimensions.height / 20, text: "Arrow/WASD keys\nto move.")
+        #endif
+        effect.zPosition = ZIndices.buttons
+        game.scene.addChild(effect)
+        
+        effect.run(.sequence([
+            .fadeIn(withDuration: 0.5),
+            .wait(forDuration: 0.1),
+            .fadeOut(withDuration: 0.5),
+            .removeFromParent(),
+        ]))
+    }
 
-func effectStunned(game: Game) {
-    let effect = createLabel(x: 0, y: heightHalf / 24, size: height / 24, text: "Stunned")
-    effect.zPosition = zOfButtons
-    
-    game.hero.addChild(effect)
-    effect.run(defaultEffectAction)
-    effect.run(.moveBy(x: 0, y: height / 24, duration: 0.5))
-}
+    private func presentHeroEffectLabel(text: String, size: CGFloat, duration: TimeInterval) {
+        let effect = createLabel(x: 0, y: Dimensions.heightHalf / 24, size: size, text: text)
+        effect.zPosition = ZIndices.buttons
+        
+        game.hero.addChild(effect)
+        effect.run(defaultEffectAction)
+        effect.run(.moveBy(x: 0, y: Dimensions.height / 24, duration: duration))
+    }
 
-func effectSuperpowerGranted(game: Game) {
-    let effect = createLabel(x: 0, y: heightHalf / 24, size: height / 32, text: "wallbreaker\ngained")
-    effect.zPosition = zOfButtons
-    
-    game.hero.addChild(effect)
-    effect.run(defaultEffectAction)
-    effect.run(.moveBy(x: 0, y: height / 24, duration: 0.3))
-}
+    func scoreIncreased() {
+        presentHeroEffectLabel(
+            text: "+1",
+            size: Dimensions.height / 24,
+            duration: 0.5
+        )
+    }
 
-func effectSuperpowerUsed(game: Game) {
-    let effect = createLabel(x: 0, y: heightHalf / 24, size: height / 36, text: "wallbreaker\nused")
-    effect.zPosition = zOfButtons
-    
-    game.hero.addChild(effect)
-    effect.run(defaultEffectAction)
-    effect.run(.moveBy(x: 0, y: height / 24, duration: 0.3))
+    func stunned() {
+        presentHeroEffectLabel(
+            text: "Stunned",
+            size: Dimensions.height / 24,
+            duration: 0.5
+        )
+    }
+
+    func superpowerGranted() {
+        presentHeroEffectLabel(
+            text: "wallbreaker\ngained",
+            size: Dimensions.height / 32,
+            duration: 0.3
+        )
+    }
+
+    func superpowerUsed() {
+        presentHeroEffectLabel(
+            text: "wallbreaker\nused",
+            size: Dimensions.height / 36,
+            duration: 0.3
+        )
+    }
 }

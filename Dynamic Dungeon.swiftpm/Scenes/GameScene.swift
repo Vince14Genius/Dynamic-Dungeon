@@ -15,9 +15,8 @@ class GameScene : SKScene {
         super.init(size: size)
         scaleMode = .aspectFit
         
-        createShadows(scene: self)
+        createShadows()
         addChild(game.allTiles)
-        gameSetup(game: game)
     }
     
     required init?(coder aDecoder: NSCoder) {

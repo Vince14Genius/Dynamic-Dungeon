@@ -10,122 +10,112 @@ import SpriteKit
 
 // MARK: Sliding Controls
 
-var inAction = false
-
-func slideTest(xShift: CGFloat, yShift: CGFloat, game: Game) {
-    var duration = 0.04
-    if superpowerOn {
-        duration = 0.04
-    }
-    
-    let moveHalf = SKAction.move(to: CGPoint(x: xShift / 2, y: yShift / 2), duration: duration)
-    
-    let moveBack = SKAction.sequence([
-        .move(to: CGPoint(x: 0, y: 0), duration: duration),
-        .wait(forDuration: 0.1),
-        .run {
-            superpowerOff(game: game)
-            inAction = false
-        }])
-    
-    let determine = SKAction.run {
+extension Game {
+    func slideTest(xShift: CGFloat, yShift: CGFloat) {
+        let duration = 0.04
         
-        let determineX = (game.hero.parent?.position.x)! + xShift
-        let determineY = (game.hero.parent?.parent?.position.y)! + yShift
+        let moveHalf = SKAction.move(to: CGPoint(x: xShift / 2, y: yShift / 2), duration: duration)
         
-        let nodes      = game.allTiles.nodes(at: CGPoint(x: determineX, y: determineY))
+        let moveBack = SKAction.sequence([
+            .move(to: CGPoint(x: 0, y: 0), duration: duration),
+            .wait(forDuration: 0.1),
+            .run {
+                self.superpowerOff()
+                self.isInAction = false
+            }
+        ])
         
-        var determined = false
-        
-        if determineX < 0 || determineX > width || determineY > height {
-            superpowerOff(game: game)
-            game.hero.run(moveBack)
-            return
-        }
-        
-        for node in nodes {
-            if !determined {
-                if let tile = node as? Tile {
+        let determine = SKAction.run {
+            
+            let determineX = self.hero.parent!.position.x + xShift
+            let determineY = self.hero.parent!.parent!.position.y + yShift
+            
+            let nodes = self.allTiles.nodes(at: CGPoint(x: determineX, y: determineY))
+            
+            var determined = false
+            
+            if determineX < 0 || determineX > Dimensions.width || determineY > Dimensions.height {
+                self.superpowerOff()
+                self.hero.run(moveBack)
+                return
+            }
+            
+            for node in nodes {
+                if
+                    !determined,
+                    let tile = node as? Tile
+                {
                     let moveFull = SKAction.sequence([
                         .move(to: CGPoint(x: xShift, y: yShift), duration: 0.1),
                         .run {
-                            testForSuperpower(game: game)
-                            game.hero.removeFromParent()
-                            tile.addChild(game.hero)
-                            game.hero.position = CGPoint(x: 0, y: 0)
+                            self.testForSuperpower()
+                            self.hero.removeFromParent()
+                            tile.addChild(self.hero)
+                            self.hero.position = .zero
                             
-                            var stunned = false
-                            for child in (game.hero.parent?.children)! {
+                            var isStunned = false
+                            for child in self.hero.parent!.children {
                                 if let addOn = child as? AddOn {
                                     switch addOn.type {
                                     case .star:
-                                        effectAddScore(game: game)
+                                        self.effects.scoreIncreased()
                                         addOn.testStar()
-                                    case .specialAttack: stunned = true
+                                    case .specialAttack:
+                                        isStunned = true
                                     default: break
                                     }
                                 }
                             }
-                            if stunned {
-                                if superpowerUse(game: game) {
-                                    effectStunned(game: game)
-                                    game.hero.run(.sequence([
-                                        .wait(forDuration: 0.5),
-                                        .run {
-                                            inAction = false
-                                        }
-                                        ]))
-                                } else {
-                                    effectStunned(game: game)
-                                    game.hero.run(.sequence([
-                                        .wait(forDuration: 1.0),
-                                        .run {
-                                            inAction = false
-                                        }
-                                        ]))
-                                }
+                            
+                            if isStunned {
+                                let stunDuration = self.superpowerUse() ? 0.5 : 1.0
+                                self.effects.stunned()
+                                self.hero.run(.sequence([
+                                    .wait(forDuration: stunDuration),
+                                    .run { self.isInAction = false }
+                                ]))
                             } else {
-                                inAction = false
+                                self.isInAction = false
                             }
                         }])
                     
                     if tile.type == .path {
-                        game.hero.run(moveFull)
+                        self.hero.run(moveFull)
                     } else {
-                        if superpowerUse(game: game) {
+                        if self.superpowerUse() {
                             tile.turnIntoPath()
-                            game.hero.run(moveFull)
+                            self.hero.run(moveFull)
                         } else {
-                            game.hero.run(moveBack)
+                            self.hero.run(moveBack)
                         }
                     }
                     determined = true
                 }
             }
+            
+            if !determined {
+                self.superpowerOff()
+                self.hero.run(moveBack)
+            }
         }
         
-        if !determined {
-            superpowerOff(game: game)
-            game.hero.run(moveBack)
-        }
+        hero.run(.sequence([moveHalf, determine]))
     }
-    
-    game.hero.run(.sequence([moveHalf, determine]))
-}
 
-func slide(begin: CGPoint, end: CGPoint, game: Game) {
-    if !inAction {
-        let xDiff = end.x - begin.x
-        let yDiff = end.y - begin.y
-        let angle = Double(atan2(yDiff, xDiff))
-        
-        inAction = true
-        
-        switch angle {
-        case -(3 * .pi / 4) ..<    -(.pi / 4): /* Down  */ slideTest(xShift: 0, yShift: -squareSide, game: game)
-        case     -(.pi / 4) ..<     (.pi / 4): /* Right */ slideTest(xShift: squareSide, yShift: 0, game: game)
-        case      (.pi / 4) ..< (3 * .pi / 4): /* Up    */ slideTest(xShift: 0         , yShift: squareSide, game: game)
-        default                              : /* Left  */ slideTest(xShift: -squareSide, yShift: 0, game: game)
+    func slide(begin: CGPoint, end: CGPoint) {
+        if !isInAction {
+            let xDiff = end.x - begin.x
+            let yDiff = end.y - begin.y
+            let angle = Double(atan2(yDiff, xDiff))
+            
+            isInAction = true
+            
+            switch angle {
+            case -(3 * .pi / 4) ..<    -(.pi / 4): /* Down  */ slideTest(xShift: 0, yShift: -squareSide)
+            case     -(.pi / 4) ..<     (.pi / 4): /* Right */ slideTest(xShift: squareSide, yShift: 0)
+            case      (.pi / 4) ..< (3 * .pi / 4): /* Up    */ slideTest(xShift: 0         , yShift: squareSide)
+            default                              : /* Left  */ slideTest(xShift: -squareSide, yShift: 0)
+            }
         }
     }
 }
@@ -142,15 +132,15 @@ func inputEnded(touchPoint: CGPoint, game: Game) {
     defer { previousInputPoint = nil }
     
     if let begin = previousInputPoint {
-        slide(begin: begin, end: touchPoint, game: game)
+        game.slide(begin: begin, end: touchPoint)
     }
 }
 
 // MARK: Scenes
 
 func slideWithKeys(xShift: CGFloat, yShift: CGFloat, game: Game) {
-    if !inAction {
-        inAction = true
-        slideTest(xShift: xShift, yShift: yShift, game: game)
+    if !game.isInAction {
+        game.isInAction = true
+        game.slideTest(xShift: xShift, yShift: yShift)
     }
 }

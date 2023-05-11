@@ -18,10 +18,27 @@ class Game: ObservableObject {
     @Published var isGameOver = false
     
     private(set) var scene: GameScene!
+    private(set) var effects: Effects!
+    
     let allTiles = SKNode()
     let hero = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "hero")))
     
+    var isSuperpowerOn = false
+    var combo = 0
+    
+    var lastRow   : SKNode?
+    var lastCombo : [Tile]?
+    var isInAction = false
+    
     init() {
-        scene = .init(size: .init(width: width, height: height), game: self)
+        scene = .init(
+            size: .init(
+                width: Dimensions.width,
+                height: Dimensions.height
+            ),
+            game: self
+        )
+        effects = .init(game: self)
+        setup()
     }
 }

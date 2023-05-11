@@ -8,7 +8,7 @@
 
 import SpriteKit
 
-let squareSide = width / 6
+let squareSide = Dimensions.width / 6
 
 // Tweak the numbers here for the right scrolling speed and acceleration
 let initialSpeedDuration   = 0.6
@@ -28,10 +28,10 @@ class Tile : SKNode {
         switch type {
         case .path:
             node = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "tileRoad")))
-            node.zPosition = zOfTiles
+            node.zPosition = ZIndices.tiles
         case .wall:
             node = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "tileWall")))
-            node.zPosition = zOfTiles + 0.1
+            node.zPosition = ZIndices.walls
         }
         
         super.init()
@@ -49,13 +49,13 @@ class Tile : SKNode {
     func turnIntoPath() {
         type = .path
         node.texture = SKTexture(image: #imageLiteral(resourceName: "tileRoad"))
-        node.zPosition = zOfTiles
+        node.zPosition = ZIndices.tiles
     }
     
     func turnIntoWall() {
-        type = .path
+        type = .wall
         node.texture = SKTexture(image: #imageLiteral(resourceName: "tileWall"))
-        node.zPosition = zOfTiles
+        node.zPosition = ZIndices.walls
     }
 }
 
@@ -87,7 +87,7 @@ class AddOn : SKNode {
         super.init()
         set(type: inputType, game: game)
         
-        node.zPosition = zOfEffects
+        node.zPosition = ZIndices.effects
         node.size = CGSize(width: squareSide, height: squareSide)
         addChild(node)
     }
@@ -115,12 +115,12 @@ class AddOn : SKNode {
                 ]))
             for i in (parent?.children)! {
                 if i === game.hero {
-                    effectStunned(game: game)
-                    superpowerOn = false
+                    game.effects.stunned()
+                    game.isSuperpowerOn = false
                     game.hero.run(.sequence([
                         .wait(forDuration: 0.5),
                         .run {
-                            inAction = false
+                            game.isInAction = false
                         }
                         ]))
                 }
