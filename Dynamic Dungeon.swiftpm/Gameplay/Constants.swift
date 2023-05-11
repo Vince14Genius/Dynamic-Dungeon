@@ -28,6 +28,9 @@ enum GameParameters {
     static let scoreToAdditionalStunAttackChanceMultiplier = 0.0008
     
     static let rowGenerationsNeededPerStar = 3
+    
+    static let stunDuration = 1.0
+    static let stunDurationWithSuperpower = 0.25
 }
 
 enum KeyCodes {
