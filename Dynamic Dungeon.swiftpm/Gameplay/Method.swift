@@ -16,7 +16,7 @@ var speedDuration = finalSpeedDuration + (initialSpeedDuration - finalSpeedDurat
 var lastRow   : SKNode?
 var lastCombo : [Tile]?
 
-func generateTiles(gameState: GameState) {
+func generateTiles(game: Game) {
     let row = SKNode()
     var thisCombo : [Tile] = []
     
@@ -88,12 +88,12 @@ func generateTiles(gameState: GameState) {
     
     if (rowsGenerated % 3 == 0) && (rowsGenerated != 0) {
         thisCombo[Int(arc4random() % UInt32(thisCombo.count))].addChild(
-            AddOn(type: .star, gameState: gameState)
+            AddOn(type: .star, game: game)
         )
     }
     
     if rowsGenerated != 0 {
-        for child in gameState.allTiles.children {
+        for child in game.allTiles.children {
             for i in child.children {
                 if
                     let tile = i as? Tile,
@@ -103,7 +103,7 @@ func generateTiles(gameState: GameState) {
                     tile.addChild(
                         AddOn(
                             type: .specialAttackWindup,
-                            gameState: gameState
+                            game: game
                         )
                     )
                 }
@@ -147,8 +147,8 @@ func generateTiles(gameState: GameState) {
     lastRow   = row
     rowsGenerated += 1
     
-    gameState.allTiles.addChild(row)
-    gameState.allTiles.position.y = 0
+    game.allTiles.addChild(row)
+    game.allTiles.position.y = 0
 }
 
 func createShadows(scene: SKScene) {
@@ -176,30 +176,30 @@ func createShadows(scene: SKScene) {
 var superpowerOn = false
 var combo        = 0
 
-func testForSuperpower(gameState: GameState) {
+func testForSuperpower(game: Game) {
     combo += 1
     if combo >= 4 {
         if !superpowerOn {
-            effectSuperpowerGranted(gameState: gameState)
+            effectSuperpowerGranted(game: game)
         }
         superpowerOn = true
-        gameState.hero.texture = SKTexture(imageNamed: "heroSwift")
+        game.hero.texture = SKTexture(imageNamed: "heroSwift")
     }
 }
 
-func superpowerUse(gameState: GameState) -> Bool {
+func superpowerUse(game: Game) -> Bool {
     let superpowerWasOn = superpowerOn
     if superpowerOn {
-        effectSuperpowerUsed(gameState: gameState)
+        effectSuperpowerUsed(game: game)
     }
     superpowerOn = false
     combo = 0
-    gameState.hero.texture = SKTexture(imageNamed: "hero")
+    game.hero.texture = SKTexture(imageNamed: "hero")
     return superpowerWasOn
 }
 
-func superpowerOff(gameState: GameState) {
+func superpowerOff(game: Game) {
     superpowerOn = false
     combo = 0
-    gameState.hero.texture = SKTexture(imageNamed: "hero")
+    game.hero.texture = SKTexture(imageNamed: "hero")
 }

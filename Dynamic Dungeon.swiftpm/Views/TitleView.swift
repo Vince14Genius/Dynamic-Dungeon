@@ -26,7 +26,7 @@ struct TitleView: View {
                     }
                     .font(.title)
                     .buttonStyle(.borderedProminent)
-                    Spacer()
+                    Spacer(minLength: proxy.size.height * 0.2)
                 }
             }
         }

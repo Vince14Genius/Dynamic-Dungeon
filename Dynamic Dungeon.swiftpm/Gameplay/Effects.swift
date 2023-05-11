@@ -32,38 +32,38 @@ private let defaultEffectAction = SKAction.sequence([
     .removeFromParent()
 ])
 
-func effectAddScore(gameState: GameState) {
+func effectAddScore(game: Game) {
     let effect = createLabel(x: 0, y: heightHalf / 24, size: height / 24, text: "+1")
     effect.zPosition = zOfButtons
     
-    gameState.hero.addChild(effect)
+    game.hero.addChild(effect)
     effect.run(defaultEffectAction)
     effect.run(.moveBy(x: 0, y: height / 24, duration: 0.5))
 }
 
-func effectStunned(gameState: GameState) {
+func effectStunned(game: Game) {
     let effect = createLabel(x: 0, y: heightHalf / 24, size: height / 24, text: "Stunned")
     effect.zPosition = zOfButtons
     
-    gameState.hero.addChild(effect)
+    game.hero.addChild(effect)
     effect.run(defaultEffectAction)
     effect.run(.moveBy(x: 0, y: height / 24, duration: 0.5))
 }
 
-func effectSuperpowerGranted(gameState: GameState) {
+func effectSuperpowerGranted(game: Game) {
     let effect = createLabel(x: 0, y: heightHalf / 24, size: height / 32, text: "wallbreaker\ngained")
     effect.zPosition = zOfButtons
     
-    gameState.hero.addChild(effect)
+    game.hero.addChild(effect)
     effect.run(defaultEffectAction)
     effect.run(.moveBy(x: 0, y: height / 24, duration: 0.3))
 }
 
-func effectSuperpowerUsed(gameState: GameState) {
+func effectSuperpowerUsed(game: Game) {
     let effect = createLabel(x: 0, y: heightHalf / 24, size: height / 36, text: "wallbreaker\nused")
     effect.zPosition = zOfButtons
     
-    gameState.hero.addChild(effect)
+    game.hero.addChild(effect)
     effect.run(defaultEffectAction)
     effect.run(.moveBy(x: 0, y: height / 24, duration: 0.3))
 }

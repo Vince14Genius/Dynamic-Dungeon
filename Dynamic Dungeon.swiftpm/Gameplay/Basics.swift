@@ -58,10 +58,10 @@ func createLabel(x: CGFloat, y: CGFloat, size: CGFloat, text: String) -> SKLabel
     return node
 }
 
-func gameSetup(gameState: GameState) {
-    gameState.allTiles.removeAllChildren()
-    gameState.allTiles.removeAllActions()
-    gameState.hero.removeAllActions()
+func gameSetup(game: Game) {
+    game.allTiles.removeAllChildren()
+    game.allTiles.removeAllActions()
+    game.hero.removeAllActions()
     
     rowsGenerated = 0
     speedDuration = finalSpeedDuration + (initialSpeedDuration - finalSpeedDuration) / (Double(powf(Float(1 + speedIncreaseRateBase), Float(Double(rowsGenerated) * speedIncreaseRatePower))))
@@ -73,26 +73,26 @@ func gameSetup(gameState: GameState) {
     superpowerOn = false
     combo        = 0
     
-    gameState.hero.texture   = SKTexture(image: #imageLiteral(resourceName: "hero"))
-    gameState.hero.size      = CGSize(width: squareSide, height: squareSide)
-    gameState.hero.position  = CGPoint(x: 0, y: 0)
-    gameState.hero.zPosition = zOfHero
+    game.hero.texture   = SKTexture(image: #imageLiteral(resourceName: "hero"))
+    game.hero.size      = CGSize(width: squareSide, height: squareSide)
+    game.hero.position  = CGPoint(x: 0, y: 0)
+    game.hero.zPosition = zOfHero
     
     for _ in 1 ... 5 {
         lastCombo     = nil
         rowsGenerated = 0
         
-        generateTiles(gameState: gameState)
+        generateTiles(game: game)
     }
     for _ in 6 ... 9 {
-        generateTiles(gameState: gameState)
+        generateTiles(game: game)
     }
     
-    gameState.allTiles.children[4].children[3].addChild(gameState.hero)
+    game.allTiles.children[4].children[3].addChild(game.hero)
     
-    effectGameStart(scene: gameState.allTiles.scene!)
+    effectGameStart(scene: game.allTiles.scene!)
     
-    gameState.allTiles.run(
+    game.allTiles.run(
         .repeatForever(
             .sequence([
                 .move(
@@ -100,15 +100,15 @@ func gameSetup(gameState: GameState) {
                     duration: speedDuration
                 ),
                 .run {
-                    gameState.allTiles.children[0].removeFromParent()
-                    for child in gameState.allTiles.children {
+                    game.allTiles.children[0].removeFromParent()
+                    for child in game.allTiles.children {
                         child.position.y -= squareSide
                     }
-                    generateTiles(gameState: gameState)
+                    generateTiles(game: game)
                     speedDuration = finalSpeedDuration + (initialSpeedDuration - finalSpeedDuration) / (Double(powf(Float(1 + speedIncreaseRateBase), Float(Double(rowsGenerated) * speedIncreaseRatePower))))
-                    if let heroY = gameState.hero.parent?.parent?.position.y {
+                    if let heroY = game.hero.parent?.parent?.position.y {
                         if heroY <= 0 {
-                            gameState.isGameOver = true
+                            game.isGameOver = true
                         }
                     }
                 }

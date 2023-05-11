@@ -62,10 +62,10 @@ class Tile : SKNode {
 class AddOn : SKNode {
     var node : SKSpriteNode
     var type : AddonType
-    let gameState: GameState
+    let game: Game
     
-    init(type inputType: AddonType, gameState: GameState) {
-        self.gameState = gameState
+    init(type inputType: AddonType, game: Game) {
+        self.game = game
         type = inputType
         
         switch type {
@@ -85,7 +85,7 @@ class AddOn : SKNode {
         }
         
         super.init()
-        set(type: inputType, gameState: gameState)
+        set(type: inputType, game: game)
         
         node.zPosition = zOfEffects
         node.size = CGSize(width: squareSide, height: squareSide)
@@ -96,7 +96,7 @@ class AddOn : SKNode {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func set(type inputType: AddonType, gameState: GameState) {
+    func set(type inputType: AddonType, game: Game) {
         type = inputType
         switch type {
         case .star:
@@ -114,10 +114,10 @@ class AddOn : SKNode {
                 .removeFromParent()
                 ]))
             for i in (parent?.children)! {
-                if i === gameState.hero {
-                    effectStunned(gameState: gameState)
+                if i === game.hero {
+                    effectStunned(game: game)
                     superpowerOn = false
-                    gameState.hero.run(.sequence([
+                    game.hero.run(.sequence([
                         .wait(forDuration: 0.5),
                         .run {
                             inAction = false
@@ -130,7 +130,7 @@ class AddOn : SKNode {
             run(.sequence([
                 .rotate(byAngle: 2 * .pi, duration: 1.0),
                 .run {
-                    self.set(type: .specialAttack, gameState: gameState)
+                    self.set(type: .specialAttack, game: game)
                 }
                 ]))
         case .wallAttackWindup:
@@ -147,8 +147,8 @@ class AddOn : SKNode {
     
     func testStar() {
         if type == .star {
-            set(type: .litStar, gameState: gameState)
-            gameState.score += 1
+            set(type: .litStar, game: game)
+            game.score += 1
         }
     }
 }

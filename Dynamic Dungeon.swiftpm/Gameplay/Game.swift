@@ -1,5 +1,5 @@
 //
-//  GameState.swift
+//  Game.swift
 //  
 //
 //  Created by Vincent C. on 5/9/23.
@@ -8,7 +8,7 @@
 import Foundation
 import SpriteKit
 
-class GameState: ObservableObject {
+class Game: ObservableObject {
     @Published var score = 0
     @Published var isPaused = false {
         didSet {
@@ -22,6 +22,6 @@ class GameState: ObservableObject {
     let hero = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "hero")))
     
     init() {
-        scene = .init(size: .init(width: width, height: height), gameState: self)
+        scene = .init(size: .init(width: width, height: height), game: self)
     }
 }

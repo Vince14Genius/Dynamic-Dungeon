@@ -12,14 +12,14 @@ struct GameplayView: View {
     @State var isShowingExitAlert = false
     @Binding var navigationState: NavigationState
     
-    @StateObject var gameState = GameState()
+    @StateObject var game = Game()
     
     var body: some View {
         ZStack {
-            SpriteView(scene: gameState.scene)
+            SpriteView(scene: game.scene)
                 .ignoresSafeArea()
             Group {
-                if gameState.isPaused {
+                if game.isPaused {
                     Color(white: 0, opacity: 0.5)
                     Text("Paused")
                         .foregroundColor(.white)
@@ -29,15 +29,15 @@ struct GameplayView: View {
             VStack {
                 HStack {
                     Button {
-                        gameState.isPaused.toggle()
+                        game.isPaused.toggle()
                     } label: {
-                        Image(systemName: gameState.isPaused ? "play.fill" : "pause.fill")
+                        Image(systemName: game.isPaused ? "play.fill" : "pause.fill")
                             .resizable()
                             .padding()
                     }
                     .frame(width: 44, height: 44)
                     Spacer()
-                    Text("Score: \(gameState.score)")
+                    Text("Score: \(game.score)")
                         .font(.title2)
                         .foregroundColor(Color.accentColor)
                     Spacer()
@@ -64,9 +64,9 @@ struct GameplayView: View {
         } message: {
             Text("Are you sure you want to quit? Your progress will not be saved.")
         }
-        .onChange(of: gameState.isGameOver) { newValue in
+        .onChange(of: game.isGameOver) { newValue in
             if newValue {
-                navigationState = .gameover(score: gameState.score)
+                navigationState = .gameover(score: game.score)
             }
         }
     }
