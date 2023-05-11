@@ -35,10 +35,10 @@ struct GameplayView: View {
                             .resizable()
                             .padding()
                     }
-                    .frame(width: 44, height: 44)
+                    .frame(width: 56, height: 56)
                     Spacer()
-                    Text("Score: \(game.score)")
-                        .font(.title2)
+                    Text("\(game.score)★")
+                        .font(.title)
                         .foregroundColor(Color.accentColor)
                     Spacer()
                     Button {
@@ -49,7 +49,7 @@ struct GameplayView: View {
                             .resizable()
                             .padding()
                     }
-                    .frame(width: 44, height: 44)
+                    .frame(width: 56, height: 56)
                 }
                 Spacer()
             }

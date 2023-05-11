@@ -70,18 +70,18 @@ extension Effects {
     }
 
     private func presentHeroEffectLabel(text: String, size: CGFloat, duration: TimeInterval) {
-        let effect = createLabel(x: 0, y: Dimensions.heightHalf / 24, size: size, text: text)
+        let effect = createLabel(x: 0, y: Dimensions.heightHalf / 18, size: size, text: text)
         effect.zPosition = ZIndices.labels
         
         game.hero.addChild(effect)
         effect.run(defaultEffectAction)
-        effect.run(.moveBy(x: 0, y: Dimensions.height / 24, duration: duration))
+        effect.run(.moveBy(x: 0, y: Dimensions.height / 18, duration: duration))
     }
 
     func scoreIncreased() {
         presentHeroEffectLabel(
             text: "+1",
-            size: Dimensions.height / 24,
+            size: Dimensions.height / 18,
             duration: 0.5
         )
     }
@@ -96,7 +96,7 @@ extension Effects {
 
     func superpowerGranted() {
         presentHeroEffectLabel(
-            text: "wallbreaker\ngained",
+            text: "wallbreaker",
             size: Dimensions.height / 32,
             duration: 0.3
         )

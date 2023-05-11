@@ -18,10 +18,10 @@ enum Dimensions {
 enum GameParameters {
     static let squareSide = Dimensions.width / 6
 
-    static let initialSpeedDuration = 0.8
+    static let initialSpeedDuration = 0.7
     
     /// The reciprocal of this value is the xScore at which the speed doubles (duration halves)
-    static let scoreToAdditionalSpeedMultiplier = 0.025
+    static let scoreToAdditionalSpeedMultiplier = 0.022
     
     static let initialStunAttackChance = 0.01
     static let stunAttackChanceLimit = 0.1
