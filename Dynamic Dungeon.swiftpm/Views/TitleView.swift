@@ -17,12 +17,9 @@ struct TitleView: View {
                     .ignoresSafeArea()
                 VStack {
                     Spacer()
-//                    Image("title")
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-                    Text("Title")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
+                    Image("title")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
                     Spacer()
                     Button("Play") {
                         navigationState = .gameplay

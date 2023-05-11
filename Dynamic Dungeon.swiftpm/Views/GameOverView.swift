@@ -21,7 +21,7 @@ struct GameOverView: View {
                     .font(.largeTitle)
                     .foregroundColor(.white)
                 Spacer()
-                Text("Final Score: \(score)")
+                Text("Score: \(score)")
                     .font(.title2)
                     .foregroundColor(.white)
                 Spacer()
