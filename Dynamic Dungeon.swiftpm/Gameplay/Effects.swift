@@ -9,7 +9,11 @@
 import SpriteKit
 
 func effectGameStart(scene: SKScene) {
+    #if os(iOS)
+    let effect = createLabel(x: widthHalf, y: heightHalf, size: height / 20, text: "Swipe to move.")
+    #elseif os(macOS)
     let effect = createLabel(x: widthHalf, y: heightHalf, size: height / 20, text: "Arrow/WASD keys\nto move.")
+    #endif
     effect.zPosition = zOfButtons
     scene.addChild(effect)
     
