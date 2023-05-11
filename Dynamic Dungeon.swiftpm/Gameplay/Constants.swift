@@ -21,7 +21,7 @@ enum GameParameters {
     static let initialSpeedDuration = 0.8
     
     /// The reciprocal of this value is the xScore at which the speed doubles (duration halves)
-    static let scoreToAdditionalSpeedMultiplier = 0.022
+    static let scoreToAdditionalSpeedMultiplier = 0.025
     
     static let initialStunAttackChance = 0.01
     static let stunAttackChanceLimit = 0.1
@@ -43,7 +43,7 @@ enum KeyCodes {
 }
 
 enum ZIndices {
-    static let buttons : CGFloat = 15
+    static let labels : CGFloat = 15
     static let tiles   : CGFloat = 1
     static let walls   : CGFloat = 1.1
     static let effects : CGFloat = 2

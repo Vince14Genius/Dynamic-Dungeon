@@ -25,7 +25,7 @@ private func createLabel(x: CGFloat, y: CGFloat, size: CGFloat, text: String) ->
     node.position  = CGPoint(x: x, y: y)
     node.fontSize  = size
     node.text      = text
-    node.zPosition = ZIndices.buttons
+    node.zPosition = ZIndices.labels
     return node
 }
 
@@ -37,26 +37,41 @@ private let defaultEffectAction = SKAction.sequence([
 ])
 
 extension Effects {
+    private func instructionLabel(_ text: String) -> SKLabelNode {
+        let label = createLabel(x: Dimensions.widthHalf, y: Dimensions.heightHalf, size: Dimensions.height / 20, text: text)
+        label.zPosition = ZIndices.labels
+        return label
+    }
+    
     func startingInstructions() {
         #if os(iOS)
-        let effect = createLabel(x: Dimensions.widthHalf, y: Dimensions.heightHalf, size: Dimensions.height / 20, text: "Swipe to move.")
+        let instruction1 = instructionLabel("Swipe to move.")
         #elseif os(macOS)
-        let effect = createLabel(x: Dimensions.widthHalf, y: Dimensions.heightHalf, size: Dimensions.height / 20, text: "Arrow/WASD keys\nto move.")
+        let instruction1 = instructionLabel("Arrow/WASD keys\nto move.")
         #endif
-        effect.zPosition = ZIndices.buttons
-        game.scene.addChild(effect)
+        let instruction2 = instructionLabel("Survive &\ncollect stars!")
+        instruction2.alpha = 0
         
-        effect.run(.sequence([
-            .fadeIn(withDuration: 0.5),
-            .wait(forDuration: 0.1),
+        game.scene.addChild(instruction1)
+        game.scene.addChild(instruction2)
+        
+        let labelBlink = SKAction.sequence([
+            .fadeIn(withDuration: 0.3),
+            .wait(forDuration: 0.4),
             .fadeOut(withDuration: 0.5),
             .removeFromParent(),
+        ])
+        
+        instruction1.run(labelBlink)
+        instruction2.run(.sequence([
+            .wait(forDuration: 1.5),
+            labelBlink
         ]))
     }
 
     private func presentHeroEffectLabel(text: String, size: CGFloat, duration: TimeInterval) {
         let effect = createLabel(x: 0, y: Dimensions.heightHalf / 24, size: size, text: text)
-        effect.zPosition = ZIndices.buttons
+        effect.zPosition = ZIndices.labels
         
         game.hero.addChild(effect)
         effect.run(defaultEffectAction)

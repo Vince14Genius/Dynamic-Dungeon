@@ -11,13 +11,13 @@ extension Game {
     func setup() {
         // MARK: generate initial tiles
         
-        for _ in 1 ... 5 {
+        for _ in 1 ... 7 {
             lastCombo     = nil
             rowsGenerated = 0
             
             generateTiles()
         }
-        for _ in 6 ... 9 {
+        for _ in 8 ... 9 {
             generateTiles()
         }
         
