@@ -12,7 +12,7 @@ extension Game {
         // MARK: generate initial tiles
         
         for _ in 1 ... 9 {
-            lastCombo     = nil
+            previousRowPool     = nil
             rowsGenerated = 0
             
             generateTiles()

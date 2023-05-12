@@ -23,10 +23,10 @@ class AddOn : SKNode {
         case .litStar:
             node = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "addonStarActivated")))
             node.alpha = 0.75
-        case .specialAttack:
+        case .stunAttack:
             node = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "addonAttack")))
             
-        case .specialAttackWindup:
+        case .stunAttackWindup:
             node = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "addonAttackWindup")))
         case .wallAttackWindup:
             node = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "addonBuildAWall")))
@@ -55,37 +55,35 @@ class AddOn : SKNode {
             node.texture = SKTexture(image: #imageLiteral(resourceName: "addonStarActivated"))
             node.alpha = 0.75
             node.run(.repeatForever(.rotate(byAngle: 2 * .pi, duration: 1.0)))
-        case .specialAttack:
+        case .stunAttack:
             node.texture = SKTexture(image: #imageLiteral(resourceName: "addonAttack"))
             run(.sequence([
-                .rotate(byAngle: 4 * .pi, duration: 0.5),
+                .rotate(byAngle: 4 * .pi, duration: GameParameters.stunAttackAppearDuration),
                 .removeFromParent()
                 ]))
-            for i in (parent?.children)! {
-                if i === game.hero {
-                    game.effects.stunned()
-                    game.isSuperpowerOn = false
-                    game.hero.run(.sequence([
-                        .wait(forDuration: 0.5),
-                        .run {
-                            game.isInAction = false
-                        }
-                        ]))
-                }
+            for child in parent!.children {
+                guard child === game.hero else { continue }
+                game.stunHero()
             }
-        case .specialAttackWindup:
+        case .stunAttackWindup:
             node.texture = SKTexture(image: #imageLiteral(resourceName: "addonAttackWindup"))
             run(.sequence([
-                .rotate(byAngle: 2 * .pi, duration: 1.0),
+                .rotate(byAngle: 2 * .pi, duration: GameParameters.stunAttackWindupTime),
                 .run {
-                    self.set(type: .specialAttack, game: game)
+                    self.set(type: .stunAttack, game: game)
                 }
                 ]))
         case .wallAttackWindup:
             node.texture = SKTexture(image: #imageLiteral(resourceName: "addonBuildAWall"))
             run(.sequence([
-                .fadeOut(withDuration: 1.0),
+                .fadeOut(withDuration: GameParameters.stunAttackWindupTime),
                 .run {
+                    for child in self.parent!.children {
+                        if child === game.hero {
+                            game.effects.wallSpawnDenied()
+                            return
+                        }
+                    }
                     (self.parent! as! Tile).turnIntoWall()
                 },
                 .removeFromParent()

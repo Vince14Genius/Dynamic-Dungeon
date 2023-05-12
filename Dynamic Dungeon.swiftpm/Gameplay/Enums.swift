@@ -16,7 +16,7 @@ enum TileType {
 enum AddonType {
     case star
     case litStar
-    case specialAttackWindup
-    case specialAttack
+    case stunAttackWindup
+    case stunAttack
     case wallAttackWindup
 }

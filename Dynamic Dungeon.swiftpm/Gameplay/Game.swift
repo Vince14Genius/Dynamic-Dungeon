@@ -26,8 +26,8 @@ class Game: ObservableObject {
     var isSuperpowerOn = false
     var combo = 0
     
-    var lastRow   : SKNode?
-    var lastCombo : [Tile]?
+    var previousRowNode: SKNode?
+    var previousRowPool: [Tile]?
     var isInAction = false
     
     var rowsGenerated = 0

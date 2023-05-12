@@ -93,6 +93,14 @@ extension Effects {
             duration: 0.5
         )
     }
+    
+    func wallSpawnDenied() {
+        presentHeroEffectLabel(
+            text: "wall spawn\ndenied",
+            size: Dimensions.height / 32,
+            duration: 0.3
+        )
+    }
 
     func superpowerGranted() {
         presentHeroEffectLabel(

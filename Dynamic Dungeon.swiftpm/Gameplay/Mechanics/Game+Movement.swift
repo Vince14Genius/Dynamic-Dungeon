@@ -29,35 +29,17 @@ extension Game {
                     tile.addChild(self.hero)
                     self.hero.position = .zero
                     
-                    var isStunned = false
+                    self.isInAction = false
                     for child in self.hero.parent!.children {
-                        if let addOn = child as? AddOn {
-                            switch addOn.type {
-                            case .star:
-                                self.effects.scoreIncreased()
-                                addOn.testStar()
-                            case .specialAttack:
-                                isStunned = true
-                            default: break
-                            }
+                        guard let addOn = child as? AddOn else { continue }
+                        switch addOn.type {
+                        case .star:
+                            self.effects.scoreIncreased()
+                            addOn.testStar()
+                        case .stunAttack:
+                            self.stunHero()
+                        default: break
                         }
-                    }
-                    
-                    if isStunned {
-                        let stunDuration: TimeInterval
-                        if self.useSuperpower() {
-                            stunDuration = GameParameters.stunDurationWithSuperpower
-                            self.effects.superpowerUsed()
-                        } else {
-                            stunDuration = GameParameters.stunDuration
-                        }
-                        self.effects.stunned()
-                        self.hero.run(.sequence([
-                            .wait(forDuration: stunDuration),
-                            .run { self.isInAction = false }
-                        ]))
-                    } else {
-                        self.isInAction = false
                     }
                 }
             ])

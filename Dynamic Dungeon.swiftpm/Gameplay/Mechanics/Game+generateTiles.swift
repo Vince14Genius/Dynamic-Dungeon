@@ -10,47 +10,59 @@ import SpriteKit
 
 extension Game {
     func generateTiles() {
-        let row = SKNode()
-        var thisCombo : [Tile] = []
+        let currentRowNode = SKNode()
+        var currentRowPool : [Tile] = []
         
-        if rowsGenerated % 2 == 0 {
-            if lastCombo == nil { //Generate open first row
-                for i in 1 ... 6 {
-                    thisCombo.append(Tile(type: .path, xCoordinate: i))
-                }
-            } else { //Generate row that connects from previous paths
-                var lastPathCount  = 0
-                var pathsAvailable = [1, 2, 3, 4, 5, 6]
-                
-                for i in lastCombo! {
-                    if i.type == .path {
-                        lastPathCount += 1
-                        thisCombo.append(Tile(type: .path, xCoordinate: i.x))
-                        var removeIndex : Int?
-                        
-                        for j in 0 ..< pathsAvailable.count {
-                            if i.x == pathsAvailable[j] {
-                                removeIndex = j
-                            }
-                        }
-                        
-                        if let x = removeIndex {
-                            pathsAvailable.remove(at: x)
+        if
+            let previousRowPool,
+            rowsGenerated % 2 == 0
+        {
+            // MARK: Generate row that connects from previous paths
+            var lastPathCount  = 0
+            var pathsAvailable = [1, 2, 3, 4, 5, 6]
+            
+            for i in previousRowPool {
+                if i.type == .path {
+                    lastPathCount += 1
+                    currentRowPool.append(Tile(type: .path, xCoordinate: i.x))
+                    var removeIndex : Int?
+                    
+                    for j in 0 ..< pathsAvailable.count {
+                        if i.x == pathsAvailable[j] {
+                            removeIndex = j
                         }
                     }
-                }
-                
-                for i in pathsAvailable {
-                    if Int.random(in: 0 ..< 4) < lastPathCount {
-                        thisCombo.append(Tile(type: .path, xCoordinate: i))
+                    
+                    if let x = removeIndex {
+                        pathsAvailable.remove(at: x)
                     }
                 }
             }
-        } else { //Generates paths that connect from previous paths
+            
+            if
+                previousRowPool.count == 2,
+                abs(previousRowPool[0].x - previousRowPool[1].x) > 2
+            {
+                // connect the paths if they are too far apart
+                let lower = min(previousRowPool[0].x, previousRowPool[1].x)
+                let upper = max(previousRowPool[0].x, previousRowPool[1].x)
+                for i in lower + 1 ..< upper {
+                    currentRowPool.append(Tile(type: .path, xCoordinate: i))
+                }
+            } else {
+                // Add random path tiles
+                for i in pathsAvailable {
+                    if Int.random(in: 0 ..< 4) < lastPathCount {
+                        currentRowPool.append(Tile(type: .path, xCoordinate: i))
+                    }
+                }
+            }
+        } else if let previousRowPool {
+            // MARK: Generates paths that connect from previous paths
             var numberOfPaths = Int.random(in: 1 ..< 4)
             var pathsAvailable = [1, 2, 3, 4, 5, 6]
             
-            for i in lastCombo! {
+            for i in previousRowPool {
                 if i.type == .wall {
                     var removeIndex : Int?
                     
@@ -66,51 +78,69 @@ extension Game {
                 }
             }
             
-            if numberOfPaths > pathsAvailable.count {numberOfPaths = pathsAvailable.count}
+            if numberOfPaths > pathsAvailable.count { numberOfPaths = pathsAvailable.count }
             
             for _ in 1 ... numberOfPaths {
                 let randomLocation = Int.random(in: 0 ..< pathsAvailable.count)
                 let addingCoordinate = pathsAvailable[randomLocation]
                 pathsAvailable.remove(at: randomLocation)
                 
-                thisCombo.append(Tile(type: .path, xCoordinate: addingCoordinate))
+                currentRowPool.append(Tile(type: .path, xCoordinate: addingCoordinate))
+            }
+        } else {
+            // MARK: Generate initial open rows
+            for i in 1 ... 6 {
+                currentRowPool.append(Tile(type: .path, xCoordinate: i))
             }
         }
         
-        //Add addons
+        // MARK: Add addons
         
         if
-            rowsGenerated > 0,
-            rowsGenerated % GameParameters.rowGenerationsNeededPerStar == 0
+            rowsGenerated > 0
         {
-            thisCombo[Int.random(in: 0 ..< thisCombo.count)].addChild(
-                AddOn(type: .star, game: self)
-            )
-        }
-        
-        if rowsGenerated != 0 {
-            for child in allTiles.children {
-                for i in child.children {
-                    if
-                        let tile = i as? Tile,
-                        tile.type == .path,
-                        Double.random(in: 0..<1) < stunAttackChance
-                    {
+            if rowsGenerated % GameParameters.rowGenerationsNeededPerStar == 0 {
+                currentRowPool[Int.random(in: 0 ..< currentRowPool.count)].addChild(
+                    AddOn(type: .star, game: self)
+                )
+            }
+            
+            for row in allTiles.children {
+                for element in row.children {
+                    guard
+                        let tile = element as? Tile,
+                        tile.type == .path
+                    else { continue }
+                    
+                    switch Double.random(in: 0 ..< 1) {
+                    case 0 ..< stunAttackChance:
                         tile.addChild(
                             AddOn(
-                                type: .specialAttackWindup,
+                                type: .stunAttackWindup,
                                 game: self
                             )
                         )
+                    case stunAttackChance ..< stunAttackChance + GameParameters.wallAttackChance:
+                        tile.addChild(
+                            AddOn(
+                                type: .wallAttackWindup,
+                                game: self
+                            )
+                        )
+                    default:
+                        break
                     }
                 }
             }
         }
         
-        //Add walls
+        if rowsGenerated != 0 {
+        }
+        
+        // MARK: Add walls
         
         var wallsAvailable = [1, 2, 3, 4, 5, 6]
-        for i in thisCombo {
+        for i in currentRowPool {
             var removeIndex : Int?
             
             for j in 0 ..< wallsAvailable.count {
@@ -125,25 +155,25 @@ extension Game {
         }
         
         for i in wallsAvailable {
-            thisCombo.append(Tile(type: .wall, xCoordinate: i))
+            currentRowPool.append(Tile(type: .wall, xCoordinate: i))
         }
         
-        //Finalize
+        // MARK: Finalize
         
-        lastCombo = thisCombo
+        previousRowPool = currentRowPool
         
-        for tile in thisCombo {
-            row.addChild(tile)
+        for tile in currentRowPool {
+            currentRowNode.addChild(tile)
         }
         
-        if let last = lastRow {
-            row.position.y = last.position.y + GameParameters.squareSide
+        if let last = previousRowNode {
+            currentRowNode.position.y = last.position.y + GameParameters.squareSide
         }
         
-        lastRow = row
+        previousRowNode = currentRowNode
         rowsGenerated += 1
         
-        allTiles.addChild(row)
+        allTiles.addChild(currentRowNode)
         allTiles.position.y = 0
     }
 }
