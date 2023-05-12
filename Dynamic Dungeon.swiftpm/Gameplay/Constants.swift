@@ -8,8 +8,8 @@
 import Foundation
 
 enum Dimensions {
-    static let height: CGFloat = 960
-    static let width: CGFloat = height * 3 / 4
+    static let width: CGFloat = 720
+    static let height: CGFloat = 1280
     static let size = CGSize(width: width, height: height)
     static let widthHalf  = width / 2
     static let heightHalf = height / 2
@@ -21,7 +21,7 @@ enum GameParameters {
     static let initialSpeedDuration = 0.7
     
     /// The reciprocal of this value is the xScore at which the speed doubles (duration halves)
-    static let scoreToAdditionalSpeedMultiplier = 0.022
+    static let scoreToAdditionalSpeedMultiplier = 0.02
     
     static let initialStunAttackChance = 0.01
     static let stunAttackChanceLimit = 0.1

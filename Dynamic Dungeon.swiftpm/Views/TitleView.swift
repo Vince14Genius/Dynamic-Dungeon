@@ -16,6 +16,18 @@ struct TitleView: View {
                 Color(#colorLiteral(red: 0.1019607857, green: 0.2784313858, blue: 0.400000006, alpha: 1))
                     .ignoresSafeArea()
                 VStack {
+                    Image("edgeOfHell")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                    Spacer()
+                    Image("edgeOfHell")
+                        .resizable()
+                        .rotationEffect(.radians(.pi))
+                        .aspectRatio(contentMode: .fit)
+                }
+                .opacity(0.5)
+                .ignoresSafeArea()
+                VStack {
                     Spacer()
                     Image("title")
                         .resizable()
@@ -25,7 +37,7 @@ struct TitleView: View {
                         navigationState = .gameplay
                     }
                     .font(.title)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                     Spacer(minLength: proxy.size.height * 0.2)
                 }
             }

@@ -11,13 +11,13 @@ extension Game {
     func setup() {
         // MARK: generate initial tiles
         
-        for _ in 1 ... 7 {
+        for _ in 1 ... 9 {
             lastCombo     = nil
             rowsGenerated = 0
             
             generateTiles()
         }
-        for _ in 8 ... 9 {
+        for _ in 10 ... 12 {
             generateTiles()
         }
         
@@ -28,7 +28,7 @@ extension Game {
         hero.position  = CGPoint(x: 0, y: 0)
         hero.zPosition = ZIndices.hero
         
-        allTiles.children[4].children[3].addChild(hero)
+        allTiles.children[7].children[3].addChild(hero)
         
         // MARK: Gameplay start
         

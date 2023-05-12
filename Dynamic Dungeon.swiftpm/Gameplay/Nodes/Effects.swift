@@ -64,7 +64,7 @@ extension Effects {
         
         instruction1.run(labelBlink)
         instruction2.run(.sequence([
-            .wait(forDuration: 1.5),
+            .wait(forDuration: 1.4),
             labelBlink
         ]))
     }
