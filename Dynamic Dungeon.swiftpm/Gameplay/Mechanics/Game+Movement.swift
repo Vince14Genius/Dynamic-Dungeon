@@ -45,6 +45,7 @@ extension Game {
             ])
         }
         
+        // MARK: determine commit/cancel
         let determine = SKAction.run {
             
             let determineX = self.hero.parent!.position.x + xShift
@@ -64,7 +65,17 @@ extension Game {
                 guard let tile = node as? Tile else { continue }
                 
                 if tile.type == .path {
-                    self.hero.run(moveFull(tile: tile))
+                    self.hero.run(.sequence([
+                        moveFull(tile: tile),
+                        .run {
+                            // if wall spawn happens after the hero crosses
+                            // the tile boundary, deny the wall spawn
+                            if tile.type == .wall {
+                                tile.turnIntoPath()
+                                self.effects.wallSpawnDenied()
+                            }
+                        }
+                    ]))
                 } else if self.useSuperpower() {
                     tile.turnIntoPath()
                     self.hero.run(moveFull(tile: tile))

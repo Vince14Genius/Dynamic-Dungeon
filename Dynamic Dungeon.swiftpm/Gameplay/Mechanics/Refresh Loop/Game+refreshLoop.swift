@@ -21,6 +21,7 @@ extension Game {
             defer { self.refreshLoop() }
             
             // game-over check
+            self.isGameOver = self.hero.parent?.parent == nil
             if
                 let heroY = self.hero.parent?.parent?.position.y,
                 heroY <= 0

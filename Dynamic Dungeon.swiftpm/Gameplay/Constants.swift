@@ -21,11 +21,11 @@ enum GameParameters {
     static let initialSpeedDuration = 0.7
     
     /// The reciprocal of this value is the xScore at which the speed doubles (duration halves)
-    static let scoreToAdditionalSpeedMultiplier = 0.02
+    static let scoreToAdditionalSpeedMultiplier = 0.025
     
     static let initialStunAttackChance = 0.01
     static let stunAttackChanceLimit = 0.1
-    static let scoreToAdditionalStunAttackChanceMultiplier = 0.0008
+    static let scoreToAdditionalStunAttackChanceMultiplier = 0.0005
     
     static let wallAttackChance = 0.005
     
