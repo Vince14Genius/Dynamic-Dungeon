@@ -55,7 +55,10 @@ extension Game {
             
             var isMoveDestinationATile = false
             
-            if determineX < 0 || determineX > Dimensions.width || determineY > Dimensions.height {
+            let leftBound = 0.0
+            let rightBound = Dimensions.width
+            let topBound = Dimensions.height + GameParameters.squareSide * 0.75
+            if determineX < leftBound || determineX > rightBound || determineY > topBound {
                 self.loseSuperpower()
                 self.hero.run(moveBack)
                 return

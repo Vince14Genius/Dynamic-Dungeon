@@ -38,9 +38,7 @@ struct GameplayView: View {
                     }
                     .frame(width: 56, height: 56)
                     Spacer()
-                    Text("\(game.score)★")
-                        .font(.title)
-                        .foregroundColor(Color.accentColor)
+                    ScoreLabel(score: $game.score)
                     Spacer()
                     Button {
                         game.isPaused = true
