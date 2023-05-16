@@ -10,6 +10,23 @@ import SpriteKit
 class GameScene : SKScene {
     let game: Game
     
+    override var isPaused: Bool {
+        didSet {
+            if isPaused && !game.isPaused {
+                // sync isPaused state when SpriteKit automatically
+                // pauses the scene
+                game.isPaused = true
+            }
+            if !isPaused && game.isPaused {
+                // prevents SpriteKit from automatically unpausing
+                // the scene when the app becomes active
+                isPaused = true
+            }
+            // base case is essentially NOT-XOR;
+            // this prevents infinite recursion
+        }
+    }
+    
     init(size: CGSize, game: Game) {
         self.game = game
         super.init(size: size)

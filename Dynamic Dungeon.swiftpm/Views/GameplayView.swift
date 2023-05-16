@@ -20,8 +20,9 @@ struct GameplayView: View {
                 .ignoresSafeArea()
             Group {
                 if game.isPaused {
-                    Color(white: 0, opacity: 0.5)
-                    Text("Paused")
+                    Color(white: 0, opacity: 0.65)
+                    Text("- Paused -")
+                        .font(.largeTitle)
                         .foregroundColor(.white)
                 }
             }
