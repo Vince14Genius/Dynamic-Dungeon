@@ -21,7 +21,7 @@ class Game: ObservableObject {
     private(set) var effects: Effects!
     
     let allTiles = SKNode()
-    let hero = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "hero")))
+    let hero = Hero()
     
     var isSuperpowerOn = false
     var combo = 0
