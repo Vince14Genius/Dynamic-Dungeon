@@ -24,6 +24,12 @@ extension Game {
         switch Double.random(in: 0 ..< 1) {
         case 0 ..< stunAttackChance:
             // spawn stun attack
+            guard
+                !tile.hasAddOn(type: .wallAttackWindup),
+                !tile.hasAddOn(type: .stunAttackWindup)
+                // allow stun attack windups to be spawned on top of
+                // stun attacks, but not other stun attack windups
+            else { break }
             tile.addChild(
                 AddOn(
                     type: .stunAttackWindup,
@@ -32,7 +38,7 @@ extension Game {
             )
         case stunAttackChance ..< stunAttackChance + GameParameters.wallAttackChance:
             // spawn wall attack
-            guard !tile.hasAddOn(type: .star) else { break }
+            guard !tile.hasAddOns else { break }
             tile.addChild(
                 AddOn(
                     type: .wallAttackWindup,

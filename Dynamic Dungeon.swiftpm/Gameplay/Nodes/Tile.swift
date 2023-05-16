@@ -58,4 +58,8 @@ class Tile : SKNode {
             }
         }
     }
+    
+    var hasAddOns: Bool {
+        children.contains { $0 is AddOn }
+    }
 }

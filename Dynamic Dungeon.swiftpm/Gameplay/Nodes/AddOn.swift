@@ -54,7 +54,7 @@ class AddOn : SKNode {
         case .litStar:
             node.texture = SKTexture(image: #imageLiteral(resourceName: "addonStarActivated"))
             node.alpha = 0.75
-            node.run(.repeatForever(.rotate(byAngle: 2 * .pi, duration: 1.0)))
+            node.run(.repeatForever(.rotate(byAngle: 2 * .pi, duration: 0.8)))
         case .stunAttack:
             node.texture = SKTexture(image: #imageLiteral(resourceName: "addonAttack"))
             run(.sequence([

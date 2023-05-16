@@ -33,6 +33,7 @@ struct TitleView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                     Spacer()
+                    Spacer()
                     Button("Play") {
                         navigationState = .gameplay
                     }
