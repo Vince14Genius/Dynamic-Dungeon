@@ -35,27 +35,4 @@ extension Game {
         effects.startingInstructions()
         refreshLoop()
     }
-    
-    func refreshLoop() {
-        allTiles.run(
-            .move(
-                to: CGPoint(x: 0, y: -GameParameters.squareSide),
-                duration: mazeRowScrollDuration
-            )
-        ) { [weak self] in
-            guard let self else { return }
-            defer { self.refreshLoop() }
-            
-            self.allTiles.children[0].removeFromParent()
-            for child in self.allTiles.children {
-                child.position.y -= GameParameters.squareSide
-            }
-            generateTiles()
-            if let heroY = self.hero.parent?.parent?.position.y {
-                if heroY <= 0 {
-                    self.isGameOver = true
-                }
-            }
-        }
-    }
 }

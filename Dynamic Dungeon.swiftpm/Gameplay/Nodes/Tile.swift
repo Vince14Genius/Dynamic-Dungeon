@@ -48,4 +48,14 @@ class Tile : SKNode {
         node.texture = SKTexture(image: #imageLiteral(resourceName: "tileWall"))
         node.zPosition = ZIndices.walls
     }
+    
+    func hasAddOn(type: AddonType) -> Bool {
+        children.contains {
+            if let addOn = $0 as? AddOn {
+                return addOn.type == type
+            } else {
+                return false
+            }
+        }
+    }
 }

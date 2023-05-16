@@ -94,47 +94,15 @@ extension Game {
             }
         }
         
-        // MARK: Add addons
+        // MARK: Add star
         
         if
-            rowsGenerated > 0
+            rowsGenerated > 0,
+            rowsGenerated % GameParameters.rowGenerationsNeededPerStar == 0
         {
-            if rowsGenerated % GameParameters.rowGenerationsNeededPerStar == 0 {
-                currentRowPool[Int.random(in: 0 ..< currentRowPool.count)].addChild(
-                    AddOn(type: .star, game: self)
-                )
-            }
-            
-            for row in allTiles.children {
-                for element in row.children {
-                    guard
-                        let tile = element as? Tile,
-                        tile.type == .path
-                    else { continue }
-                    
-                    switch Double.random(in: 0 ..< 1) {
-                    case 0 ..< stunAttackChance:
-                        tile.addChild(
-                            AddOn(
-                                type: .stunAttackWindup,
-                                game: self
-                            )
-                        )
-                    case stunAttackChance ..< stunAttackChance + GameParameters.wallAttackChance:
-                        tile.addChild(
-                            AddOn(
-                                type: .wallAttackWindup,
-                                game: self
-                            )
-                        )
-                    default:
-                        break
-                    }
-                }
-            }
-        }
-        
-        if rowsGenerated != 0 {
+            currentRowPool[Int.random(in: 0 ..< currentRowPool.count)].addChild(
+                AddOn(type: .star, game: self)
+            )
         }
         
         // MARK: Add walls
