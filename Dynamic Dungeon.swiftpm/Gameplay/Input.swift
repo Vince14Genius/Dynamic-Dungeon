@@ -8,44 +8,63 @@
 
 import SpriteKit
 
-// MARK: Sliding Controls
-
 extension Game {
-    func slide(begin: CGPoint, end: CGPoint) {
-        if !isInAction {
-            let xDiff = end.x - begin.x
-            let yDiff = end.y - begin.y
-            let angle = Double(atan2(yDiff, xDiff))
-            
-            isInAction = true
-            
-            switch angle {
-            case -(3 * .pi / 4) ..<    -(.pi / 4): /* Down  */
-                tryMovement(
-                    xShift: 0,
-                    yShift: -GameParameters.squareSide
-                )
-            case     -(.pi / 4) ..<     (.pi / 4): /* Right */
-                tryMovement(
-                    xShift: GameParameters.squareSide,
-                    yShift: 0
-                )
-            case      (.pi / 4) ..< (3 * .pi / 4): /* Up    */
-                tryMovement(
-                    xShift: 0,
-                    yShift: GameParameters.squareSide
-                )
-            default: /* Left  */
-                tryMovement(
-                    xShift: -GameParameters.squareSide,
-                    yShift: 0
-                )
-            }
+    enum MoveDirection {
+        case left, right, up, down
+    }
+    
+    func moveHero(_ direction: MoveDirection) {
+        guard !isInAction else { return }
+        isInAction = true
+        
+        switch direction {
+        case .left:
+            tryMovement(
+                xShift: -GameParameters.squareSide,
+                yShift: 0
+            )
+        case .right:
+            tryMovement(
+                xShift: GameParameters.squareSide,
+                yShift: 0
+            )
+        case .up:
+            tryMovement(
+                xShift: 0,
+                yShift: GameParameters.squareSide
+            )
+        case .down:
+            tryMovement(
+                xShift: 0,
+                yShift: -GameParameters.squareSide
+            )
         }
     }
 }
 
-// MARK: Handling Input
+
+// MARK: Sliding Controls
+
+extension Game.MoveDirection {
+    static func fromVector(begin: CGPoint, end: CGPoint) -> Self {
+        let xDiff = end.x - begin.x
+        let yDiff = end.y - begin.y
+        let angle = Double(atan2(yDiff, xDiff))
+        
+        switch angle {
+        case -(3 * .pi / 4) ..<    -(.pi / 4):
+            return .down
+        case     -(.pi / 4) ..<     (.pi / 4):
+            return .right
+        case      (.pi / 4) ..< (3 * .pi / 4):
+            return .up
+        default:
+            return .left
+        }
+    }
+}
+
+// MARK: Handling Touch Input
 
 var previousInputPoint : CGPoint?
 
@@ -57,15 +76,6 @@ func inputEnded(touchPoint: CGPoint, game: Game) {
     defer { previousInputPoint = nil }
     
     if let begin = previousInputPoint {
-        game.slide(begin: begin, end: touchPoint)
-    }
-}
-
-// MARK: Scenes
-
-func slideWithKeys(xShift: CGFloat, yShift: CGFloat, game: Game) {
-    if !game.isInAction {
-        game.isInAction = true
-        game.tryMovement(xShift: xShift, yShift: yShift)
+        game.moveHero(.fromVector(begin: begin, end: touchPoint))
     }
 }

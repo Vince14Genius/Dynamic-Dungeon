@@ -44,10 +44,9 @@ extension Effects {
     }
     
     func startingInstructions() {
-        #if os(iOS)
-        let instruction1 = instructionLabel("Swipe to move.")
-        #elseif os(macOS)
-        let instruction1 = instructionLabel("Arrow/WASD keys\nto move.")
+        var instruction1 = instructionLabel("Swipe to move.")
+        #if targetEnvironment(macCatalyst)
+        instruction1 = instructionLabel("WASD keys\nto move.")
         #endif
         let instruction2 = instructionLabel("Survive &\ncollect stars!")
         instruction2.alpha = 0

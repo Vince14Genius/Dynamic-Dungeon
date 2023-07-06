@@ -18,6 +18,24 @@ struct GameplayView: View {
         ZStack {
             SpriteView(scene: game.scene)
                 .ignoresSafeArea()
+            
+            VStack {
+                Button("Up") { game.moveHero(.up) }
+                    .keyboardShortcut("w", modifiers: [])
+                    .keyboardShortcut(.upArrow, modifiers: [])
+                Button("Left") { game.moveHero(.left) }
+                    .keyboardShortcut("a", modifiers: [])
+                    .keyboardShortcut(.leftArrow, modifiers: [])
+                Button("Down") { game.moveHero(.down
+                ) }
+                    .keyboardShortcut("s", modifiers: [])
+                    .keyboardShortcut(.downArrow, modifiers: [])
+                Button("Right") { game.moveHero(.right) }
+                    .keyboardShortcut("d", modifiers: [])
+                    .keyboardShortcut(.rightArrow, modifiers: [])
+            }
+            .hidden()
+            
             Group {
                 if game.isPaused {
                     Color(white: 0, opacity: 0.65)
@@ -27,6 +45,7 @@ struct GameplayView: View {
                 }
             }
             .ignoresSafeArea()
+            
             VStack {
                 HStack {
                     Button {
