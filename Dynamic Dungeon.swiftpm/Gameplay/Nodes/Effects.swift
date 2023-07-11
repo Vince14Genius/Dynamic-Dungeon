@@ -13,20 +13,20 @@ class Effects {
     init(game: Game) {
         self.game = game
     }
-}
-
-private func createLabel(x: CGFloat, y: CGFloat, size: CGFloat, text: String) -> SKLabelNode {
-    let node = SKLabelNode(fontNamed: "AvenirNext-Regular")
-    node.color = #colorLiteral(red: 0.474509805440903, green: 0.839215695858002, blue: 0.976470589637756, alpha: 1.0)
-    node.horizontalAlignmentMode = .center
-    node.verticalAlignmentMode = .center
-    node.numberOfLines = 0
     
-    node.position  = CGPoint(x: x, y: y)
-    node.fontSize  = size
-    node.text      = text
-    node.zPosition = ZIndices.labels
-    return node
+    static func createLabel(x: CGFloat, y: CGFloat, size: CGFloat, text: String) -> SKLabelNode {
+        let node = SKLabelNode(fontNamed: "AvenirNext-Regular")
+        node.color = #colorLiteral(red: 0.474509805440903, green: 0.839215695858002, blue: 0.976470589637756, alpha: 1.0)
+        node.horizontalAlignmentMode = .center
+        node.verticalAlignmentMode = .center
+        node.numberOfLines = 0
+        
+        node.position  = CGPoint(x: x, y: y)
+        node.fontSize  = size
+        node.text      = text
+        node.zPosition = ZIndices.labels
+        return node
+    }
 }
 
 private let defaultEffectAction = SKAction.sequence([
@@ -37,39 +37,8 @@ private let defaultEffectAction = SKAction.sequence([
 ])
 
 extension Effects {
-    private func instructionLabel(_ text: String) -> SKLabelNode {
-        let label = createLabel(x: Dimensions.widthHalf, y: Dimensions.heightHalf, size: Dimensions.height / 20, text: text)
-        label.zPosition = ZIndices.labels
-        return label
-    }
-    
-    func startingInstructions() {
-        var instruction1 = instructionLabel("Swipe to move.")
-        #if targetEnvironment(macCatalyst)
-        instruction1 = instructionLabel("WASD keys\nto move.")
-        #endif
-        let instruction2 = instructionLabel("Survive &\ncollect stars!")
-        instruction2.alpha = 0
-        
-        game.scene.addChild(instruction1)
-        game.scene.addChild(instruction2)
-        
-        let labelBlink = SKAction.sequence([
-            .fadeIn(withDuration: 0.3),
-            .wait(forDuration: 0.4),
-            .fadeOut(withDuration: 0.5),
-            .removeFromParent(),
-        ])
-        
-        instruction1.run(labelBlink)
-        instruction2.run(.sequence([
-            .wait(forDuration: 1.4),
-            labelBlink
-        ]))
-    }
-
     private func presentHeroEffectLabel(text: String, size: CGFloat, duration: TimeInterval) {
-        let effect = createLabel(x: 0, y: Dimensions.heightHalf / 18, size: size, text: text)
+        let effect = Effects.createLabel(x: 0, y: Dimensions.heightHalf / 18, size: size, text: text)
         effect.zPosition = ZIndices.labels
         
         game.hero.addChild(effect)
